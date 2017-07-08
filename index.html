@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="Generator" content="EditPlus®">
+  <meta name="Author" content="">
+  <meta name="Keywords" content="">
+  <meta name="Description" content="">
+  <title>React Redux Dynamic List</title>
+  <link href="css/style.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.css" rel="stylesheet">
+  <script type="text/javascript" src="js/babel.js"></script>
+  <script type="text/javascript" src="js/react.js"></script>
+  <script type="text/javascript" src="js/browser.js"></script>
+  <script type="text/javascript" src="js/react-with-addons.js"></script>
+  <script type="text/javascript" src="js/react-dom.js"></script>
+  <script type="text/javascript" src="js/redux.js"></script>
+  <script type="text/javascript" src="js/react-redux.js"></script>
+  <script type="text/javascript" src="js/redux-thunk.js"></script>
+  <script type="text/jsx">
+		const {Provider, connect} = ReactRedux;
+		const {createStore, applyMiddleware} = Redux;
+		const thunk = ReduxThunk.default;
+		function fetchPostsRequest(){
+		  return {
+			type: "FETCH_REQUEST"
+		  }
+		}
+		function fetchPostsSuccess(payload) {
+		  return {
+			type: "FETCH_SUCCESS",
+			payload
+		  }
+		}
+		function fetchPostsError() {
+		  return {
+			type: "FETCH_ERROR"
+		  }
+		}
+		const reducer = (state = {}, action) => {
+		  switch (action.type) {
+			case "FETCH_REQUEST":
+			  return state;
+			case "FETCH_SUCCESS": 
+			  return {state, posts: action.payload};
+			default:
+			  return state;
+		  }
+		} 
+
+		function fetchPostsWithRedux() {
+			return (dispatch) => {
+			dispatch(fetchPostsRequest());
+			return fetchPosts().then(([response, json]) =>{
+				if(response.status === 200){
+				dispatch(fetchPostsSuccess(json))
+			  }
+			  else{
+				dispatch(fetchPostsError())
+			  }
+			})
+		  }
+		}
+
+		function fetchPosts() {
+		  const URL = "http://www.mocky.io/v2/596132761000006e0aac5adb";
+		  return fetch(URL, { method: 'GET'})
+			 .then( response => Promise.all([response, response.json()]));
+		}
+		class App extends React.Component {
+			componentDidMount(){
+			this.props.fetchPostsWithRedux()
+		  }
+			render(){
+			  return (
+					<div className="filter-list">
+					<ul>
+						{
+					this.props.posts && 
+				  this.props.posts.map((post) =>{
+					return(
+						<li>
+							<img src={post.img} />
+							<div className="content">
+								<h3><a href="">{post.title}</a></h3>
+								<p>{post.caption}</p>
+								<div className="like"><i className="ion-ios-heart accent-text"></i>{post.likes}</div>
+								<div className="people"><i className="ion-android-person-add"></i>{post.people}</div>
+								<div className="share"><i className="ion-android-share-alt"></i>Share</div>
+							</div>
+						</li>
+					)
+				  })
+				}
+				</ul>
+				</div>
+			)
+		  }
+		}
+		function mapStateToProps(state){
+			return {
+			posts: state.posts
+		  }
+		}
+
+
+		let Container = connect(mapStateToProps, {fetchPostsWithRedux})(App);
+
+		const store = createStore(
+			reducer,
+			applyMiddleware(thunk)
+		);
+		ReactDOM.render(
+			<Provider store={store}>
+				<Container/>
+			</Provider>,
+			document.getElementById('container')
+		);
+
+	</script>
+ </head>
+ <body>
+	<div class="wrapper">
+		<header>
+			<div class="menu">
+				<em></em>
+				<em></em>
+				<em></em>
+			</div>
+			<i><img src="http://drona.csa.iisc.ernet.in/~casl/images/people/default-profile.png" width="24px"></i>
+			<h1>Shuttle</h1>
+		</header>
+		<div class="description">
+			<h2>A wonderful serenity has taken possession of me</h2>
+			<label>CNN - 10 min ago</label>
+			<u>SCIENCE</u>
+		</div>
+	</div>
+	<div class="list">
+		<div id="container"></div>
+	</div>
+	<footer>
+		<h1>Shuttle</h1>
+		<div class="footer-icons">
+		  <i class="ion-social-facebook m-10 white-text"></i>
+		  <i class="ion-social-twitter m-10 white-text"></i>
+		  <i class="ion-social-pinterest m-10 white-text"></i>
+		  <i class="ion-social-instagram m-10 white-text"></i>
+		</div>
+	</footer>
+ </body>
+</html>
