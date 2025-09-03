@@ -39,6 +39,26 @@
     footer { margin-top: 3rem; font-size: .95rem; color: var(--muted); }
     .badge { display: inline-block; font-size: .8rem; padding: .25rem .5rem; border: 1px solid var(--border); border-radius: 999px; background: #fff; margin-right: .5rem;}
     strong { font-weight: 600; }
+    .back-to-top {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #333;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 18px;
+      display: none; /* Hide the button by default */
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    
+    .back-to-top.show {
+      display: block; /* Display when the 'show' class is added by JavaScript */
+      opacity: 1;
+    }
   </style>
 </head>
 <body>
@@ -531,10 +551,31 @@
       <p>&copy; <span id="year"></span> Dietician AI. All rights reserved.</p>
       <p><small>These Terms & Conditions were last updated on [Insert Date]. Version 2.0</small></p>
     </footer>
+    <button id="backToTopBtn" class="back-to-top">↑</button>
   </div>
 
   <script>
     document.getElementById('year').textContent = new Date().getFullYear();
+    // Get the button
+    const backToTopBtn = document.getElementById("backToTopBtn");
+    const scrollThreshold = 300; // Show button after scrolling 300px
+    
+    // When the user scrolls down, show or hide the button
+    window.addEventListener("scroll", () => {
+      if (document.documentElement.scrollTop > scrollThreshold) {
+        backToTopBtn.classList.add("show");
+      } else {
+        backToTopBtn.classList.remove("show");
+      }
+    });
+    
+    // When the user clicks the button, scroll to the top smoothly
+    backToTopBtn.addEventListener("click", () => {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+    });
   </script>
 </body>
 </html>
