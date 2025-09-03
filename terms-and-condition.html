@@ -59,6 +59,18 @@
       display: block; /* Display when the 'show' class is added by JavaScript */
       opacity: 1;
     }
+    .back-to-top:hover {
+      background: #4a4a4a;
+      transition: 0.5s all;
+    }
+    .back-to-top span {
+      display: inline-block;
+      transition: transform 0.3s ease-in-out;
+    }
+    
+    .back-to-top:hover span {
+      transform: translateY(-5px);
+    }
   </style>
 </head>
 <body>
@@ -551,7 +563,7 @@
       <p>&copy; <span id="year"></span> Dietician AI. All rights reserved.</p>
       <p><small>These Terms & Conditions were last updated on [Insert Date]. Version 2.0</small></p>
     </footer>
-    <button id="backToTopBtn" class="back-to-top">↑</button>
+    <button id="backToTopBtn" class="back-to-top"><span>&#8593;</span></button>
   </div>
 
   <script>
